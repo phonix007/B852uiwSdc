@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DownloadFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="Download"
+        android:textColor="@android:color/black"
+        android:textSize="32sp" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:paddingBottom="58dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+
+
+            <ImageView
+                android:id="@+id/c1"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:src="@drawable/c1" />
+
+            <ImageView
+                android:id="@+id/c2"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:src="@drawable/c2" />
+
+            <ImageView
+                android:id="@+id/download"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:src="@drawable/download_ss" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download Instructions!"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:padding="10dp"
+                android:text="1. Make Sure your internet speed minimum of 100kb/s and maximum of 1Mb/s for better experience. \n 2. Click the top right-hand side download button for downloading files. \n 3. Make sure you have given storage permission to save files and Enabled notification of the Maha360 App and Google Drive to see the download progress. \n 4. Please be patient big files may take some time to download, If the file is not downloaded then press the download button again. \n 5. Files are saved in 𝐒𝐭𝐨𝐫𝐚𝐠𝐞/𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐬/ "
+                android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/storage_ss"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:src="@drawable/storage" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:padding="10dp"
+                android:text=" 6. Click the top left-hand side back arrow to exit from PDF view. \n
+7. We are sorry because the file's name is get changed to a random name we can't do anything from our end this is the problem from android, that's why if you download any file from Telegram it's name gets changed."
+                android:textSize="22sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:paddingTop="10dp"
+                android:textStyle="bold"
+                android:text="Notes are not found?\nCheck In Common Subject folder or Fill the following Google Form "/>
+
+            <Button
+                android:id="@+id/google"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/rounded_cor"
+                android:color="@android:color/transparent"
+                android:text="Contact Us/Request Notes"
+                android:textAllCaps="false"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MSBTE Solution</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="banner_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="rr_int">ca-app-pub-3940256099942544/5354046379</string>
+    <string name="intrestial">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="appid">ca-app-pub-3940256099942544~3347511713</string>
+
 </resources>
