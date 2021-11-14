@@ -20,11 +20,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
 import com.google.android.gms.common.internal.Constants;
@@ -35,7 +39,7 @@ import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class HomeFragment extends Fragment implements OnUserEarnedRewardListener {
+public class HomeFragment extends Fragment {
 //    private static final long START_TIME_IN_MILLIS = 43200000; // Time for
 
     private CountDownTimer mCountDownTimer;
@@ -46,6 +50,7 @@ public class HomeFragment extends Fragment implements OnUserEarnedRewardListener
     private String eurl;
     private int checkad;
     private long mStartTimeInMillis = 43200000;  // change here also
+    private RewardedAd mRewardedAd;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -56,6 +61,9 @@ public class HomeFragment extends Fragment implements OnUserEarnedRewardListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        loadreward();
+        showvideoad();
 
 
         if (checkad == 10) {
@@ -119,7 +127,6 @@ public class HomeFragment extends Fragment implements OnUserEarnedRewardListener
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Please wait a movment...", Toast.LENGTH_LONG).show();
-                loadAd();
 
 
             }
@@ -161,25 +168,7 @@ public class HomeFragment extends Fragment implements OnUserEarnedRewardListener
         return view;
     }
 
-    private void loadAd() {
-        RewardedInterstitialAd.load(getContext(), "ca-app-pub-3940256099942544/5354046379", new AdRequest.Builder().build(), new RewardedInterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedInterstitialAd) {
-                super.onAdLoaded(rewardedInterstitialAd);
 
-                rewardedInterstitialAd.show(getActivity(), HomeFragment.this::onUserEarnedReward);
-            }
-
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-                loadAd();
-                resetTimer(); // temporary added this
-                startTimer();
-            }
-        });
-
-    }
 
     @Override
     public void onStop() {
@@ -245,6 +234,71 @@ public class HomeFragment extends Fragment implements OnUserEarnedRewardListener
                 startTimer();
             }
         }
+    }
+
+    private void loadreward() {
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(getContext(), "ca-app-pub-3940256099942544/5224354917",
+                adRequest, new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error.
+
+                        mRewardedAd = null;
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+
+                    }
+                });
+
+
+    }
+
+    private void showvideoad() {
+
+        if (mRewardedAd != null) {
+            mRewardedAd.show(getActivity(), new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    resetTimer();
+                    startTimer();
+                    Toast.makeText(getContext(), "Unlimited Downloading Started...", Toast.LENGTH_LONG).show();
+                    mTimerRunning = true;
+                    if (mTimerRunning) {
+                        mTimerRunning = true;
+                        checkad = 10;
+                    } else {
+                        mTimerRunning = false;
+                        checkad = 20;
+                    }
+
+
+                }
+            });
+
+            mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent();
+
+
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    // Called when ad fails to show.
+                    Log.d(TAG, "Ad failed to show.");
+                }
+
+            });
+
+        }
+
     }
 
     private void startTimer() {
@@ -313,20 +367,4 @@ public class HomeFragment extends Fragment implements OnUserEarnedRewardListener
         mTextViewCountDown.setText(timeLeftFormatted);
     }
 
-
-    @Override
-    public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-        resetTimer();
-        startTimer();
-
-        Toast.makeText(getContext(), "Unlimited Downloading Started...", Toast.LENGTH_LONG).show();
-        mTimerRunning = true;
-        if (mTimerRunning) {
-            mTimerRunning = true;
-            checkad = 10;
-        } else {
-            mTimerRunning = false;
-            checkad = 20;
-        }
-    }
 }

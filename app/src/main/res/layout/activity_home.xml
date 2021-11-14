@@ -51,8 +51,6 @@
             ads:adUnitId="@string/banner_id">
         </com.google.android.gms.ads.AdView>
 
-
-
     </FrameLayout>
 
 

@@ -17,6 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -33,6 +40,7 @@ public class HomeActivity extends AppCompatActivity implements InAppUpdateManage
 
     InAppUpdateManager inAppUpdateManager;
     private long backPressedTime;
+    private AdView mAdView;
     private Toast backToast;
 
 
@@ -41,7 +49,32 @@ public class HomeActivity extends AppCompatActivity implements InAppUpdateManage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
 
+        mAdView = findViewById(R.id.adView2_main);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        if (mAdView != null) {
+            mAdView.loadAd(adRequest);
+        }
+
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError adError) {
+                // Code to be executed when an ad request fails.
+                super.onAdFailedToLoad(adError);
+                mAdView.loadAd(adRequest);
+            }
+
+        });
 
         inAppUpdateManager = InAppUpdateManager.Builder(this, 101)
                 .resumeUpdates(true)

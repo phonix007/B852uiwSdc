@@ -266,21 +266,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadreward() {
-//        RewardedInterstitialAd.load(MainActivity.this, "ca-app-pub-3940256099942544/5354046379", new AdRequest.Builder().build(), new RewardedInterstitialAdLoadCallback() {
-//            @Override
-//            public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedInterstitialAd) {
-//                super.onAdLoaded(rewardedInterstitialAd);
-//                rewardedInterstitialAd.show(MainActivity.this, MainActivity.this::onUserEarnedReward);
-//            }
-//
-//            @Override
-//            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-//                super.onAdFailedToLoad(loadAdError);
-//                loadreward();
-//
-//            }
-//        });
-
 
         AdRequest adRequest = new AdRequest.Builder().build();
 
