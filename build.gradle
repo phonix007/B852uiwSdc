@@ -15,8 +15,10 @@ buildscript {
 allprojects {
     repositories {
         google()
-        maven { url 'https://jitpack.io' } // openads
         jcenter()
+        maven {
+            url 'https://android-sdk.is.com/'
+        }
     }
 }
 

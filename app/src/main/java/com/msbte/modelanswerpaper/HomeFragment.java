@@ -32,6 +32,13 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
 import com.google.android.gms.common.internal.Constants;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.OnSuccessListener;
+import com.google.android.play.core.tasks.Task;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.util.Locale;
 
@@ -40,7 +47,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 
 public class HomeFragment extends Fragment {
-//    private static final long START_TIME_IN_MILLIS = 43200000; // Time for
+
 
     private CountDownTimer mCountDownTimer;
     private boolean mTimerRunning;
@@ -49,8 +56,11 @@ public class HomeFragment extends Fragment {
     private TextView mTextViewCountDown;
     private String eurl;
     private int checkad;
-    private long mStartTimeInMillis = 43200000;  // change here also
+    private long mStartTimeInMillis = 2400000;  // change here also
     private RewardedAd mRewardedAd;
+
+    ReviewManager manager;
+    ReviewInfo reviewInfo;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -63,7 +73,7 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         loadreward();
-        showvideoad();
+
 
 
         if (checkad == 10) {
@@ -84,9 +94,7 @@ public class HomeFragment extends Fragment {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_SUBJECT, " " + getString(R.string.app_name));
-                    String msg = "स्टॉक मार्केट, ट्रेडिंग अॅप हे मराठी लोकांमध्ये शेअर मार्केट, ट्रेडिंग आणि क्रिप्टोकरन्सी ज्ञान प्रदान करण्यासाठी आहे, जिथे तुम्ही स्टॉक मार्केट,ट्रेडिंग मराठी भाषेत शिकू शकता. हे अॅप तुम्हाला शेअर बाजारातील मूलभूत गोष्टी, प्रकारांसह कॅण्डल्स आणि मराठीत क्रिप्टोकरन्सी बद्दल माहिती पुरवते. \n" +
-                            "\n" +
-                            "शेअर मार्केट, ट्रेडिंग आणि क्रिप्टो करेंसी बद्दल माहिती मिळवण्यासाठी लगेच डाउनलोड करा \n https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n"; // Change your message
+                    String msg = "Hey, I found a nice app that have all the Question papers of MSBTE and SPPU. This is the best study resource app for MSBTE students, It have answers of manuals, question papers, model answer papers, syllabus, notes and many more download now \n https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + "\n\n"; // Change your message
                     intent.putExtra(Intent.EXTRA_TEXT, msg);
                     startActivity(Intent.createChooser(intent, "Share App with your friends"));
                 } catch (Exception e) {
@@ -99,24 +107,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-
-                    new AlertDialog.Builder(getContext()) //alert the person knowing they are about to close
-                            .setTitle("Join Telegram Channel")
-                            .setMessage("Which Channel You Want to join")
-                            .setPositiveButton("Diploma", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/joinchat/V3H9kU_aQwoOs-96")));
-                                }
-                            })
-                            .setNegativeButton("Degree", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/joinchat/V3H9kU_aQwoOs-96")));
-                                }
-                            })
-                            //.setNegativeButton("No", null)
-                            .show();
-                    // Add privacy policy url
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/joinchat/S3D7dTXVloCmxJsF")));
                 } catch (Exception e) {
                     Toast.makeText(getContext(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
                 }
@@ -127,6 +118,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Please wait a movment...", Toast.LENGTH_LONG).show();
+                showvideoad();
 
 
             }
@@ -144,23 +136,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), MainActivity.class);
-                eurl = "https://drive.google.com/folderview?id=1gQIr4lskuLbpqHQU1U05S88r9pMcINCi";
+                eurl = "https://drive.google.com/drive/folders/1MD4fBpaBoememAplzAsGztQID2Tu2XtK?usp=sharing";
                 intent.putExtra("url", eurl);
                 intent.putExtra("ad", checkad);
                 startActivity(intent);
 
-
-            }
-        });
-
-        view.findViewById(R.id.degree).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                eurl = "https://drive.google.com/drive/u/0/folders/0Bz9C0ysJZ7PnMGZKeWcybUpXWGM?resourcekey=0-S2yaWXvAG7ObM_GC8LRNTQ";
-                intent.putExtra("url", eurl);
-                intent.putExtra("ad", checkad);
-                startActivity(intent);
 
             }
         });
@@ -191,7 +171,7 @@ public class HomeFragment extends Fragment {
         super.onStart();
         SharedPreferences prefs = this.getActivity().getSharedPreferences("prefs", MODE_PRIVATE);
 
-        mStartTimeInMillis = prefs.getLong("startTimeInMillis", 43200000);  // change time here also
+        mStartTimeInMillis = prefs.getLong("startTimeInMillis", 2400000);  // change time here also
         mTimeLeftInMillis = prefs.getLong("millisLeft", mStartTimeInMillis);
         mTimerRunning = prefs.getBoolean("timerRunning", false); //
 
@@ -246,7 +226,6 @@ public class HomeFragment extends Fragment {
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error.
 
-                        mRewardedAd = null;
                     }
 
                     @Override
@@ -267,7 +246,9 @@ public class HomeFragment extends Fragment {
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
                     resetTimer();
                     startTimer();
-                    Toast.makeText(getContext(), "Unlimited Downloading Started...", Toast.LENGTH_LONG).show();
+                    checkad = rewardItem.getAmount();
+                    String rewardType = rewardItem.getType();
+                    Toast.makeText(getContext(), "File Downloading Started...", Toast.LENGTH_LONG).show();
                     mTimerRunning = true;
                     if (mTimerRunning) {
                         mTimerRunning = true;
@@ -291,6 +272,30 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    Toast.makeText(getActivity(), "No Ads Found, Please Try Again", Toast.LENGTH_LONG).show();
+                    // review
+                    manager = ReviewManagerFactory.create(getActivity());
+                    Task<ReviewInfo> request = manager.requestReviewFlow();
+                    request.addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
+                        @Override
+                        public void onComplete(@NonNull Task<ReviewInfo> task) {
+
+                            if (task.isSuccessful()){
+                                reviewInfo = task.getResult();
+                                Task<Void> flow = manager.launchReviewFlow(getActivity(),reviewInfo);
+
+                                flow.addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void result) {
+
+                                    }
+                                });
+                            }else {
+                                Toast.makeText(getActivity(), "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                    // review end
                     // Called when ad fails to show.
                     Log.d(TAG, "Ad failed to show.");
                 }
@@ -365,6 +370,15 @@ public class HomeFragment extends Fragment {
                     "%02d:%02d", minutes, seconds);
         }
         mTextViewCountDown.setText(timeLeftFormatted);
+    }
+
+    public void onResume() {
+        super.onResume();
+        IronSource.onResume(getActivity());
+    }
+    public void onPause() {
+        super.onPause();
+        IronSource.onPause(getActivity());
     }
 
 }

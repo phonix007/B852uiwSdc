@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".HomeFragment">
 
@@ -12,10 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textStyle="bold"
-        android:text="Maha360 APP"
+        android:text="@string/app_name"
         android:textColor="@android:color/black"
-        android:textSize="32sp" />
+        android:textSize="32sp"
+        android:textStyle="bold" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -34,14 +34,21 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-<!--            <com.airbnb.lottie.LottieAnimationView-->
-<!--                android:id="@+id/animationView"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="200dp"-->
-<!--                app:lottie_url="REPLACE_JSON_URL"-->
-<!--                app:lottie_rawRes="@raw/learning"-->
-<!--                app:lottie_autoPlay="true"-->
-<!--                app:lottie_loop="true"/>-->
+            <ImageView
+                android:id="@+id/c1"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/compu" />
+
+            <!--            <com.airbnb.lottie.LottieAnimationView-->
+            <!--                android:id="@+id/animationView"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="200dp"-->
+            <!--                app:lottie_url="REPLACE_JSON_URL"-->
+            <!--                app:lottie_rawRes="@raw/learning"-->
+            <!--                app:lottie_autoPlay="true"-->
+            <!--                app:lottie_loop="true"/>-->
 
             <Button
                 android:id="@+id/watch"
@@ -54,7 +61,7 @@
                 android:drawablePadding="10dp"
                 android:drawableTint="@color/black"
                 android:padding="15dp"
-                android:text="Watch Ad for Unlimited Download"
+                android:text="Watch Ad for File Downloading"
                 android:textAllCaps="false"
                 android:textColor="@color/black"
                 android:textSize="16sp"
@@ -68,9 +75,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    android:text="Unlimited Downloading Time is "
+                    android:text="Downloading Time is "
                     android:textColor="@android:color/black"
                     android:textSize="15sp" />
+
 
                 <TextView
                     android:id="@+id/text_view_countdown"
@@ -87,6 +95,10 @@
 
             </LinearLayout>
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp" />
+
 
             <Button
                 android:id="@+id/diploma"
@@ -95,24 +107,16 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/rounded_cor"
                 android:color="@android:color/transparent"
-                android:text="MSBTE Diploma"
+                android:text="MSBTE Content"
                 android:textAllCaps="false"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/degree"
+            <Space
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:background="@drawable/rounded_cor"
-                android:color="@android:color/transparent"
-                android:text="SPPU Engineering"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_height="20dp" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,7 +152,7 @@
                     android:drawablePadding="10dp"
                     android:drawableTint="@color/black"
                     android:padding="10dp"
-                    android:text="Join Telegram Channel"
+                    android:text="Join Telegram Group"
                     android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -158,7 +162,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="100dp"/>
+                android:layout_height="100dp" />
 
         </LinearLayout>
 

@@ -48,6 +48,13 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.OnSuccessListener;
+import com.google.android.play.core.tasks.Task;
+import com.ironsource.mediationsdk.IronSource;
 
 import java.io.File;
 import java.net.URL;
@@ -65,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
     private long backPressedTime;
     private Toast backToast;
     private int checkad;
+
+    ReviewManager manager;
+    ReviewInfo reviewInfo;
 
 
     private InterstitialAd mInterstitialAd;
@@ -84,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
 
         loadreward();
         loadinter();
-
 
 
         mAdView = findViewById(R.id.adView2_main);
@@ -108,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
+        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
@@ -125,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
                         mInterstitialAd = null;
                     }
                 });
-
-
 
 
         websiteURL = getIntent().getStringExtra("url");
@@ -209,52 +216,125 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
 
-                    if (checkad == 10) {
+                    Toast.makeText(getApplicationContext(), "File will download after watching video Ad", Toast.LENGTH_LONG).show();
+//                    showvideoad();
+//                    if (checkad == 10) {
+                    if (mRewardedAd != null) {
+                        mRewardedAd.show(MainActivity.this, new OnUserEarnedRewardListener() {
+                            @Override
+                            public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                                checkad = rewardItem.getAmount();
+                                String rewardType = rewardItem.getType();
+//                                downloding();
+//                                checkad = 10;
+//                    Toast.makeText(getApplicationContext(), "Press Download Again to Download file", Toast.LENGTH_LONG).show();
+                                String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+                                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+                                request.setMimeType(mimeType);
+                                String cookies = CookieManager.getInstance().getCookie(url);
+                                String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
+                                request.addRequestHeader("cookie", cookies);
+                                request.addRequestHeader("User-Agent", userAgent);
+                                request.setDescription("Saved On Storage/Downloads/");
+                                request.setTitle("Maha_360_App_" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+                                request.allowScanningByMediaScanner();
+                                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "MSBTE Solution" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+                                DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                                dm.enqueue(request);
+                                Toast.makeText(getApplicationContext(), "Downloading File...", Toast.LENGTH_LONG).show();
 
-                        String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+                            }
+                        });
 
-                        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-                        request.setMimeType(mimeType);
-                        String cookies = CookieManager.getInstance().getCookie(url);
-                        String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
-                        request.addRequestHeader("cookie", cookies);
-                        request.addRequestHeader("User-Agent", userAgent);
-                        request.setDescription("Saved On Storage/Downloads/");
-                        request.setTitle("Maha_360_App_" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
-                        request.allowScanningByMediaScanner();
-                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Maha_360_App_" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
-                        DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                        dm.enqueue(request);
-                        Toast.makeText(getApplicationContext(), "Downloading File...", Toast.LENGTH_LONG).show();
+                        mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent();
 
-                        if (mInterstitialAd != null) {
-                            mInterstitialAd.show(MainActivity.this);
-                        } else {
-                            Log.d("TAG", "The interstitial ad wasn't ready yet.");
-                        }
-                        loadinter();
 
-                    } else {
+                            }
 
-                        netcheck();
-                        new AlertDialog.Builder(MainActivity.this) //alert the person knowing they are about to close
-                                .setTitle("Unlimited Downloading Over!")
-                                .setMessage("Every Time you need to watch an Ad Because \uD835\uDC18\uD835\uDC28\uD835\uDC2E\uD835\uDC2B \uD835\uDC14\uD835\uDC27\uD835\uDC25\uD835\uDC22\uD835\uDC26\uD835\uDC2D\uD835\uDC1E\uD835\uDC1D \uD835\uDC1D\uD835\uDC28\uD835\uDC30\uD835\uDC27\uD835\uDC25\uD835\uDC28\uD835\uDC1A\uD835\uDC1D\uD835\uDC22\uD835\uDC27\uD835\uDC20 \uD835\uDC22\uD835\uDC2C \uD835\uDC28\uD835\uDC2F\uD835\uDC1E\uD835\uDC2B Please, go to \uD835\uDC07\uD835\uDC28\uD835\uDC26\uD835\uDC1E \uD835\uDC12\uD835\uDC1C\uD835\uDC2B\uD835\uDC1E\uD835\uDC1E\uD835\uDC27 \uD835\uDC1A\uD835\uDC27\uD835\uDC1D \uD835\uDC00\uD835\uDC1C\uD835\uDC2D\uD835\uDC22\uD835\uDC2F\uD835\uDC1A\uD835\uDC2D\uD835\uDC1E \uD835\uDC14\uD835\uDC27\uD835\uDC25\uD835\uDC22\uD835\uDC26\uD835\uDC22\uD835\uDC2D\uD835\uDC1E\uD835\uDC1D \uD835\uDC03\uD835\uDC28\uD835\uDC30\uD835\uDC27\uD835\uDC25\uD835\uDC28\uD835\uDC1A\uD835\uDC1D\uD835\uDC22\uD835\uDC27\uD835\uDC20...")
-                                .setPositiveButton("Watch Ad", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                // Called when ad fails to show.
+                                Log.d(TAG, "Ad failed to show.");
 
-                                        Toast.makeText(MainActivity.this, "Ad is Loading Please wait a movement... ", Toast.LENGTH_LONG).show();
-                                        showvideoad();
-                                    }
-                                })
-                                //.setNegativeButton("No", null)
-                                .show();
+                                if (mInterstitialAd != null) {
+                                    mInterstitialAd.show(MainActivity.this);
+                                } else {
+                                    Log.d("TAG", "The interstitial ad wasn't ready yet.");
+                                }
+                                loadinter();
+                                loadreward();
+
+                                String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+                                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+                                request.setMimeType(mimeType);
+                                String cookies = CookieManager.getInstance().getCookie(url);
+                                String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
+                                request.addRequestHeader("cookie", cookies);
+                                request.addRequestHeader("User-Agent", userAgent);
+                                request.setDescription("Saved On Storage/Downloads/");
+                                request.setTitle("Maha_360_App_" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+                                request.allowScanningByMediaScanner();
+                                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "MSBTE Solution" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+                                DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                                dm.enqueue(request);
+                                Toast.makeText(getApplicationContext(), "Downloading File...", Toast.LENGTH_LONG).show();
+                            }
+
+                        });
 
                     }
 
+//                        String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+//
+//                        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+//                        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+//                        request.setMimeType(mimeType);
+//                        String cookies = CookieManager.getInstance().getCookie(url);
+//                        String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
+//                        request.addRequestHeader("cookie", cookies);
+//                        request.addRequestHeader("User-Agent", userAgent);
+//                        request.setDescription("Saved On Storage/Downloads/");
+//                        request.setTitle("Maha_360_App_" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+//                        request.allowScanningByMediaScanner();
+//                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+//                        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "MSBTE Solution" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+//                        DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+//                        dm.enqueue(request);
+//                        Toast.makeText(getApplicationContext(), "Downloading File...", Toast.LENGTH_LONG).show();
+
+//                        if (mInterstitialAd != null) {
+//                            mInterstitialAd.show(MainActivity.this);
+//                        } else {
+//                            Log.d("TAG", "The interstitial ad wasn't ready yet.");
+//                        }
+//                        loadinter();
+
+//                    } else {
+//
+//                        netcheck();
+//                        new AlertDialog.Builder(MainActivity.this) //alert the person knowing they are about to close
+//                                .setTitle("Unlimited Downloading Over!")
+//                                .setMessage("Every Time you need to watch an Ad Because \uD835\uDC18\uD835\uDC28\uD835\uDC2E\uD835\uDC2B \uD835\uDC14\uD835\uDC27\uD835\uDC25\uD835\uDC22\uD835\uDC26\uD835\uDC2D\uD835\uDC1E\uD835\uDC1D \uD835\uDC1D\uD835\uDC28\uD835\uDC30\uD835\uDC27\uD835\uDC25\uD835\uDC28\uD835\uDC1A\uD835\uDC1D\uD835\uDC22\uD835\uDC27\uD835\uDC20 \uD835\uDC22\uD835\uDC2C \uD835\uDC28\uD835\uDC2F\uD835\uDC1E\uD835\uDC2B Please, go to \uD835\uDC07\uD835\uDC28\uD835\uDC26\uD835\uDC1E \uD835\uDC12\uD835\uDC1C\uD835\uDC2B\uD835\uDC1E\uD835\uDC1E\uD835\uDC27 \uD835\uDC1A\uD835\uDC27\uD835\uDC1D \uD835\uDC00\uD835\uDC1C\uD835\uDC2D\uD835\uDC22\uD835\uDC2F\uD835\uDC1A\uD835\uDC2D\uD835\uDC1E \uD835\uDC14\uD835\uDC27\uD835\uDC25\uD835\uDC22\uD835\uDC26\uD835\uDC22\uD835\uDC2D\uD835\uDC1E\uD835\uDC1D \uD835\uDC03\uD835\uDC28\uD835\uDC30\uD835\uDC27\uD835\uDC25\uD835\uDC28\uD835\uDC1A\uD835\uDC1D\uD835\uDC22\uD835\uDC27\uD835\uDC20...")
+//                                .setPositiveButton("Watch Ad", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//
+//                                        Toast.makeText(MainActivity.this, "Ad is Loading Please wait a movement... ", Toast.LENGTH_LONG).show();
+//                                        showvideoad();
+//                                    }
+//                                })
+//                                //.setNegativeButton("No", null)
+//                                .show();
+//
+//                    }
+//
                 }
             });
 
@@ -288,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void loadinter(){
+    private void loadinter() {
         AdRequest adRequest = new AdRequest.Builder().build();
 
         InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest,
@@ -324,8 +404,9 @@ public class MainActivity extends AppCompatActivity {
             mRewardedAd.show(MainActivity.this, new OnUserEarnedRewardListener() {
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    downloding();
                     checkad = 10;
-                    Toast.makeText(getApplicationContext(), "Press Download Again to Download file", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(), "Press Download Again to Download file", Toast.LENGTH_LONG).show();
 
 
                 }
@@ -351,6 +432,48 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void downloding() {
+        try {
+            webview.setDownloadListener(new DownloadListener() {
+                @Override
+                public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long contentLength) {
+
+
+                    String currentTime = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
+
+                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+                    request.setMimeType(mimeType);
+                    String cookies = CookieManager.getInstance().getCookie(url);
+                    String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
+                    request.addRequestHeader("cookie", cookies);
+                    request.addRequestHeader("User-Agent", userAgent);
+                    request.setDescription("Saved On Storage/Downloads/");
+                    request.setTitle("Maha_360_App_" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+                    request.allowScanningByMediaScanner();
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "MSBTE Solution" + currentTime + URLUtil.guessFileName(url, contentDisposition, mimeType));
+                    DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    dm.enqueue(request);
+                    Toast.makeText(getApplicationContext(), "Downloading File...", Toast.LENGTH_LONG).show();
+
+//                        if (mInterstitialAd != null) {
+//                            mInterstitialAd.show(MainActivity.this);
+//                        } else {
+//                            Log.d("TAG", "The interstitial ad wasn't ready yet.");
+//                        }
+//                        loadinter();
+
+
+                }
+            });
+
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, "Something Went Wrong!", Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "Please Check Your Internet Connection...", Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     private class WebViewClientDemo extends WebViewClient {
         @Override
@@ -372,6 +495,31 @@ public class MainActivity extends AppCompatActivity {
         if (webview.isFocused() && webview.canGoBack()) { //check if in webview and the user can go back
             webview.goBack(); //go back in webview
         } else { //do this if the webview cannot go back any further
+
+            // review
+            manager = ReviewManagerFactory.create(MainActivity.this);
+            Task<ReviewInfo> request1 = manager.requestReviewFlow();
+            request1.addOnCompleteListener(new OnCompleteListener<ReviewInfo>() {
+                @Override
+                public void onComplete(@NonNull Task<ReviewInfo> task) {
+
+                    if (task.isSuccessful()) {
+                        reviewInfo = task.getResult();
+                        Task<Void> flow = manager.launchReviewFlow(MainActivity.this, reviewInfo);
+
+                        flow.addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void result) {
+
+                            }
+                        });
+                    } else {
+                        Toast.makeText(MainActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            // review end
+
 
             if (backPressedTime + 2000 > System.currentTimeMillis()) {
                 backToast.cancel();
@@ -405,6 +553,16 @@ public class MainActivity extends AppCompatActivity {
                     .show();
         }
 
+    }
+
+    protected void onResume() {
+        super.onResume();
+        IronSource.onResume(this);
+    }
+
+    protected void onPause() {
+        super.onPause();
+        IronSource.onPause(this);
     }
 }
 

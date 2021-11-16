@@ -49,8 +49,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-basement:17.6.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:17.0.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'com.github.1902shubh:AdmobOpenAds:1.0.1' //OpenAds
-
+    
     // For apps targeting Android 12, add WorkManager dependency.
     constraints {
         implementation('androidx.work:work-runtime:2.7.0') {
@@ -59,5 +58,11 @@ dependencies {
                    FLAG_MUTABLE and will fail in apps targeting S+.'''
         }
     }
+
+    //Mediation
+    implementation 'com.google.ads.mediation:facebook:6.8.0.0'
+    implementation 'com.unity3d.ads:unity-ads:3.7.5'
+    implementation 'com.google.ads.mediation:unity:3.7.5.0'
+    implementation 'com.google.ads.mediation:ironsource:7.1.12.0'
 
 }
